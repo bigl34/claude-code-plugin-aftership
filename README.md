@@ -119,28 +119,28 @@ node scripts/dist/cli.js list-trackings
 
 ```bash
 # Search by Shopify order number (most common)
-node scripts/dist/cli.js search-by-order --order 12345
+node /Users/USER/node scripts/dist/cli.js search-by-order --order 12345
 
 # List all in-transit shipments
-node scripts/dist/cli.js list-trackings --status InTransit --limit 20
+node /Users/USER/node scripts/dist/cli.js list-trackings --status InTransit --limit 20
 
 # Find problem shipments
-node scripts/dist/cli.js find-exceptions --days 7
+node /Users/USER/node scripts/dist/cli.js find-exceptions --days 7
 
 # Find delayed deliveries (carrier-aware thresholds)
-node scripts/dist/cli.js find-delayed
+node /Users/USER/node scripts/dist/cli.js find-delayed
 
 # Get tracking details by ID
-node scripts/dist/cli.js get-tracking --id abc123xyz
+node /Users/USER/node scripts/dist/cli.js get-tracking --id abc123xyz
 
 # Retrack an expired shipment
-node scripts/dist/cli.js retrack --id abc123xyz
+node /Users/USER/node scripts/dist/cli.js retrack --id abc123xyz
 
 # Smart tracking number lookup with carrier fallback
-node scripts/dist/cli.js resolve-tracking --tracking-number 1Z999AA10123456784
+node /Users/USER/node scripts/dist/cli.js resolve-tracking --tracking-number 1Z999AA10123456784
 
 # Create tracking with custom fields (for inbound tracking automation)
-node scripts/dist/cli.js create-tracking --tracking-number 1Z999AA10123456784 --slug ups --custom-fields '{"direction":"inbound","vendor":"Acme Corp"}'
+node /Users/USER/node scripts/dist/cli.js create-tracking --tracking-number 1Z999AA10123456784 --slug ups --custom-fields '{"direction":"inbound","vendor":"Acme Corp"}'
 ```
 
 ## How It Works
