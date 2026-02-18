@@ -18,7 +18,7 @@ You manage all shipment tracking operations for YOUR_COMPANY, including:
 
 ## Available CLI Commands
 
-Run commands using: `node /home/USER/.claude/plugins/local-marketplace/aftership-tracking-manager/scripts/dist/cli.js <command> [options]`
+Run commands using: `node /Users/USER/.claude/plugins/local-marketplace/aftership-tracking-manager/scripts/dist/cli.js <command> [options]`
 
 ### Tracking Commands
 
@@ -76,28 +76,28 @@ Run commands using: `node /home/USER/.claude/plugins/local-marketplace/aftership
 
 ```bash
 # Search by Shopify order number (most common)
-node /home/USER/.claude/plugins/local-marketplace/aftership-tracking-manager/scripts/dist/cli.js search-by-order --order 12345
+node /Users/USER/.claude/plugins/local-marketplace/aftership-tracking-manager/scripts/dist/cli.js search-by-order --order 12345
 
 # List all in-transit shipments
-node /home/USER/.claude/plugins/local-marketplace/aftership-tracking-manager/scripts/dist/cli.js list-trackings --status InTransit --limit 20
+node /Users/USER/.claude/plugins/local-marketplace/aftership-tracking-manager/scripts/dist/cli.js list-trackings --status InTransit --limit 20
 
 # Find problem shipments
-node /home/USER/.claude/plugins/local-marketplace/aftership-tracking-manager/scripts/dist/cli.js find-exceptions --days 7
+node /Users/USER/.claude/plugins/local-marketplace/aftership-tracking-manager/scripts/dist/cli.js find-exceptions --days 7
 
 # Find delayed deliveries (carrier-aware thresholds)
-node /home/USER/.claude/plugins/local-marketplace/aftership-tracking-manager/scripts/dist/cli.js find-delayed
+node /Users/USER/.claude/plugins/local-marketplace/aftership-tracking-manager/scripts/dist/cli.js find-delayed
 
 # Get tracking details by ID
-node /home/USER/.claude/plugins/local-marketplace/aftership-tracking-manager/scripts/dist/cli.js get-tracking --id abc123xyz
+node /Users/USER/.claude/plugins/local-marketplace/aftership-tracking-manager/scripts/dist/cli.js get-tracking --id abc123xyz
 
 # Retrack an expired shipment
-node /home/USER/.claude/plugins/local-marketplace/aftership-tracking-manager/scripts/dist/cli.js retrack --id abc123xyz
+node /Users/USER/.claude/plugins/local-marketplace/aftership-tracking-manager/scripts/dist/cli.js retrack --id abc123xyz
 
 # Smart tracking number lookup with carrier fallback
-node /home/USER/.claude/plugins/local-marketplace/aftership-tracking-manager/scripts/dist/cli.js resolve-tracking --tracking-number 1Z999AA10123456784
+node /Users/USER/.claude/plugins/local-marketplace/aftership-tracking-manager/scripts/dist/cli.js resolve-tracking --tracking-number 1Z999AA10123456784
 
 # Create tracking with custom fields (for inbound tracking automation)
-node /home/USER/.claude/plugins/local-marketplace/aftership-tracking-manager/scripts/dist/cli.js create-tracking --tracking-number 1Z999AA10123456784 --slug ups --custom-fields '{"direction":"inbound","vendor":"Acme Corp"}'
+node /Users/USER/.claude/plugins/local-marketplace/aftership-tracking-manager/scripts/dist/cli.js create-tracking --tracking-number 1Z999AA10123456784 --slug ups --custom-fields '{"direction":"inbound","vendor":"Acme Corp"}'
 ```
 
 ## Tracking Statuses (Tags)
@@ -138,6 +138,6 @@ node /home/USER/.claude/plugins/local-marketplace/aftership-tracking-manager/scr
 - For product data -> suggest airtable-manager
 
 ## Self-Documentation
-Log API quirks/errors to: `/home/USER/biz/plugin-learnings/aftership-tracking-manager.md`
+Log API quirks/errors to: `/Users/USER/biz/plugin-learnings/aftership-tracking-manager.md`
 Format: `### [YYYY-MM-DD] [ISSUE|DISCOVERY] Brief desc` with Context/Problem/Resolution fields.
 Full workflow: `~/biz/docs/reference/agent-shared-context.md`
