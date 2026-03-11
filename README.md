@@ -42,7 +42,7 @@ Dedicated agent for AfterShip shipment tracking operations
 ## Quick Start
 
 ```bash
-git clone https://github.com/YOUR_GITHUB_USER/claude-code-plugin-aftership.git
+git clone https://github.com/bigl34/claude-code-plugin-aftership.git
 cd claude-code-plugin-aftership
 cp config.template.json config.json  # fill in your credentials
 cd scripts && npm install
