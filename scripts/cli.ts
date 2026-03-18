@@ -5,8 +5,44 @@
  * Zod-validated CLI for AfterShip shipment tracking.
  */
 
-import { z, createCommand, runCli, cacheCommands, cliTypes } from "@local/cli-utils";
+import { z, createCommand, runCli, cacheCommands, cliTypes, wrapUntrustedField, buildSafeOutput } from "@local/cli-utils";
 import { AfterShipClient } from "./aftership-client.js";
+
+function wrapTracking(t: any) {
+  return {
+    metadata: {
+      id: t.id,
+      tracking_number: t.tracking_number,
+      slug: t.slug,
+      tag: t.tag,
+      subtag: t.subtag,
+      active: t.active,
+      created_at: t.created_at,
+      updated_at: t.updated_at,
+      expected_delivery: t.expected_delivery,
+      shipment_type: t.shipment_type,
+    },
+    content: {
+      title: wrapUntrustedField("title", t.title, { maxChars: 500 }),
+      orderId: wrapUntrustedField("order_id", t.order_id, { maxChars: 200 }),
+      customerName: wrapUntrustedField("customer_name", t.customer_name, { maxChars: 200 }),
+      note: wrapUntrustedField("note", t.note, { maxChars: 500 }),
+      customFields: t.custom_fields ? wrapUntrustedField("custom_fields", JSON.stringify(t.custom_fields), { maxChars: 500 }) : undefined,
+      checkpoints: (t.checkpoints || []).map((cp: any) => ({
+        metadata: {
+          tag: cp.tag,
+          subtag: cp.subtag,
+          created_at: cp.created_at,
+          checkpoint_time: cp.checkpoint_time,
+        },
+        content: {
+          message: wrapUntrustedField("checkpoint.message", cp.message, { maxChars: 500 }),
+          location: wrapUntrustedField("checkpoint.location", cp.location, { maxChars: 200 }),
+        },
+      })),
+    },
+  };
+}
 
 // Define commands with Zod schemas
 const commands = {
@@ -28,21 +64,19 @@ const commands = {
     }),
     async (args, client: AfterShipClient) => {
       const { status, slug, orderId, createdAfter, createdBefore, limit } = args as {
-        status?: string;
-        slug?: string;
-        orderId?: string;
-        createdAfter?: string;
-        createdBefore?: string;
-        limit?: number;
+        status?: string; slug?: string; orderId?: string; createdAfter?: string; createdBefore?: string; limit?: number;
       };
-      return client.listTrackings({
-        tag: status,
-        slug,
-        order_id: orderId,
-        created_at_min: createdAfter,
-        created_at_max: createdBefore,
-        limit,
+      const result = await client.listTrackings({
+        tag: status, slug, order_id: orderId, created_at_min: createdAfter, created_at_max: createdBefore, limit,
       });
+
+      const trackings = result?.trackings || [];
+      const wrappedTrackings = trackings.map(wrapTracking);
+
+      return buildSafeOutput(
+        { command: "list-trackings", count: wrappedTrackings.length },
+        { trackings: wrappedTrackings }
+      );
     },
     "List trackings with filters"
   ),
@@ -58,14 +92,18 @@ const commands = {
     ),
     async (args, client: AfterShipClient) => {
       const { id, trackingNumber, slug } = args as {
-        id?: string;
-        trackingNumber?: string;
-        slug?: string;
+        id?: string; trackingNumber?: string; slug?: string;
       };
-      if (id) {
-        return client.getTrackingById(id);
-      }
-      return client.getTrackingByNumber(trackingNumber!, slug!);
+      const result = id
+        ? await client.getTrackingById(id)
+        : await client.getTrackingByNumber(trackingNumber!, slug!);
+
+      const t = result?.tracking || result?.data || result;
+      const wrapped = wrapTracking(t);
+      return buildSafeOutput(
+        { command: "get-tracking", ...wrapped.metadata },
+        wrapped.content
+      );
     },
     "Get tracking details"
   ),
@@ -76,7 +114,14 @@ const commands = {
     }),
     async (args, client: AfterShipClient) => {
       const { order } = args as { order: string };
-      return client.searchByOrderId(order);
+      const result = await client.searchByOrderId(order);
+
+      const wrappedTrackings = (result || []).map(wrapTracking);
+
+      return buildSafeOutput(
+        { command: "search-by-order", order, count: wrappedTrackings.length },
+        { trackings: wrappedTrackings }
+      );
     },
     "Find tracking by Shopify order number"
   ),
@@ -182,7 +227,14 @@ const commands = {
     }),
     async (args, client: AfterShipClient) => {
       const { limit, days } = args as { limit?: number; days?: number };
-      return client.findExceptions({ limit, days });
+      const result = await client.findExceptions({ limit, days });
+
+      const wrappedTrackings = (result || []).map(wrapTracking);
+
+      return buildSafeOutput(
+        { command: "find-exceptions", count: wrappedTrackings.length },
+        { trackings: wrappedTrackings }
+      );
     },
     "Find trackings with exceptions"
   ),
@@ -193,7 +245,14 @@ const commands = {
     }),
     async (args, client: AfterShipClient) => {
       const { days } = args as { days?: number };
-      return client.findDelayed({ days });
+      const result = await client.findDelayed({ days });
+
+      const wrappedTrackings = (result || []).map(wrapTracking);
+
+      return buildSafeOutput(
+        { command: "find-delayed", count: wrappedTrackings.length },
+        { trackings: wrappedTrackings }
+      );
     },
     "Find overdue shipments (carrier-aware)"
   ),
@@ -205,7 +264,14 @@ const commands = {
     }),
     async (args, client: AfterShipClient) => {
       const { limit, slug } = args as { limit?: number; slug?: string };
-      return client.getActiveShipments({ limit, slug });
+      const result = await client.getActiveShipments({ limit, slug });
+
+      const wrappedTrackings = (result || []).map(wrapTracking);
+
+      return buildSafeOutput(
+        { command: "active-shipments", count: wrappedTrackings.length },
+        { trackings: wrappedTrackings }
+      );
     },
     "List all non-delivered trackings"
   ),
@@ -217,7 +283,14 @@ const commands = {
     }),
     async (args, client: AfterShipClient) => {
       const { limit, days } = args as { limit?: number; days?: number };
-      return client.getRecentDeliveries({ limit, days });
+      const result = await client.getRecentDeliveries({ limit, days });
+
+      const wrappedTrackings = (result || []).map(wrapTracking);
+
+      return buildSafeOutput(
+        { command: "recent-deliveries", count: wrappedTrackings.length },
+        { trackings: wrappedTrackings }
+      );
     },
     "List recently delivered trackings"
   ),

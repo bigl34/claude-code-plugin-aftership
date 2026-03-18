@@ -3,7 +3,7 @@
 
 Dedicated agent for AfterShip shipment tracking operations
 
-![Version](https://img.shields.io/badge/version-1.1.7-blue) ![License: MIT](https://img.shields.io/badge/License-MIT-green) ![Node >= 18](https://img.shields.io/badge/node-%3E%3D18-brightgreen)
+![Version](https://img.shields.io/badge/version-1.3.0-blue) ![License: MIT](https://img.shields.io/badge/License-MIT-green) ![Node >= 18](https://img.shields.io/badge/node-%3E%3D18-brightgreen)
 
 ## Features
 
@@ -60,14 +60,6 @@ node scripts/dist/cli.js list-trackings
    ```bash
    cd scripts && npm install
    ```
-
-## Configuration
-
-Copy `config.template.json` to `config.json` and fill in the required values:
-
-| Field | Placeholder |
-|-------|-------------|
-| `credentials_path` | `/path/to/your/credentials` |
 
 ## Available Commands
 
@@ -127,28 +119,28 @@ Copy `config.template.json` to `config.json` and fill in the required values:
 
 ```bash
 # Search by Shopify order number (most common)
-node /Users/USER/node scripts/dist/cli.js search-by-order --order 12345
+node $HOME/node scripts/dist/cli.js search-by-order --order 12345
 
 # List all in-transit shipments
-node /Users/USER/node scripts/dist/cli.js list-trackings --status InTransit --limit 20
+node $HOME/node scripts/dist/cli.js list-trackings --status InTransit --limit 20
 
 # Find problem shipments
-node /Users/USER/node scripts/dist/cli.js find-exceptions --days 7
+node $HOME/node scripts/dist/cli.js find-exceptions --days 7
 
 # Find delayed deliveries (carrier-aware thresholds)
-node /Users/USER/node scripts/dist/cli.js find-delayed
+node $HOME/node scripts/dist/cli.js find-delayed
 
 # Get tracking details by ID
-node /Users/USER/node scripts/dist/cli.js get-tracking --id abc123xyz
+node $HOME/node scripts/dist/cli.js get-tracking --id abc123xyz
 
 # Retrack an expired shipment
-node /Users/USER/node scripts/dist/cli.js retrack --id abc123xyz
+node $HOME/node scripts/dist/cli.js retrack --id abc123xyz
 
 # Smart tracking number lookup with carrier fallback
-node /Users/USER/node scripts/dist/cli.js resolve-tracking --tracking-number 1Z999AA10123456784
+node $HOME/node scripts/dist/cli.js resolve-tracking --tracking-number 1Z999AA10123456784
 
 # Create tracking with custom fields (for inbound tracking automation)
-node /Users/USER/node scripts/dist/cli.js create-tracking --tracking-number 1Z999AA10123456784 --slug ups --custom-fields '{"direction":"inbound","vendor":"Acme Corp"}'
+node $HOME/node scripts/dist/cli.js create-tracking --tracking-number 1Z999AA10123456784 --slug ups --custom-fields '{"direction":"inbound","vendor":"Acme Corp"}'
 ```
 
 ## How It Works
